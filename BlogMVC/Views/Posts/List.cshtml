@@ -1,0 +1,53 @@
+﻿
+@model IEnumerable<BlogMVC.Models.Post>
+
+@{
+    ViewBag.Title = "Danh sách bài viết";
+}
+
+<h2>Danh sách bài viết</h2>
+
+<hr />
+
+@if (!Model.Any())
+{
+    <p>Chưa có bài viết nào.</p>
+}
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>@item.Title</h4>
+                </div>
+
+                <div class="panel-body">
+                    <p>
+                        @(
+                            item.Content.Length > 120
+                            ? item.Content.Substring(0, 120) + "..."
+                            : item.Content
+                        )
+                    </p>
+
+                    <p>
+                        <small>
+                            Ngày đăng:
+                            @item.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                        </small>
+                    </p>
+
+                    @Html.ActionLink(
+                        "Xem chi tiết",
+                        "Details",
+                        "Posts",
+                        new { id = item.PostId },
+                        new { @class = "btn btn-primary" }
+                    )
+                </div>
+            </div>
+        </div>
+    }
+</div>

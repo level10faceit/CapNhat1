@@ -1,0 +1,109 @@
+﻿
+@model BlogMVC.Models.Post
+
+@{
+    ViewBag.Title = "Chi tiết bài viết";
+}
+
+<h2>@Model.Title</h2>
+
+<p>
+    <small>
+        Ngày đăng:
+        @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+    </small>
+</p>
+
+<hr />
+
+<div style="white-space: pre-wrap;">@Model.Content</div>
+
+<hr />
+
+<h3>Bình luận (@Model.Comments.Count)</h3>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<h4>Viết bình luận</h4>
+
+@using (Html.BeginForm(
+    "AddComment",
+    "Posts",
+    FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Hidden("PostId", Model.PostId)
+
+    <div class="form-group">
+        <label for="Author">Tên của bạn</label>
+        <input type="text"
+               id="Author"
+               name="Author"
+               class="form-control"
+               maxlength="100"
+               required />
+    </div>
+
+    <div class="form-group">
+        <label for="Content">Nội dung bình luận</label>
+        <textarea id="Content"
+                  name="Content"
+                  class="form-control"
+                  rows="4"
+                  maxlength="1000"
+                  required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Gửi bình luận
+    </button>
+}
+
+<hr />
+
+<h4>Danh sách bình luận</h4>
+
+@if (Model.Comments.Count == 0)
+{
+    <p>Chưa có bình luận nào.</p>
+}
+else
+{
+    foreach (var comment in Model.Comments)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <strong>@comment.Author</strong>
+
+                <small class="text-muted">
+                    @comment.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                </small>
+
+                <p style="white-space: pre-wrap;">@comment.Content</p>
+            </div>
+        </div>
+    }
+}
+
+<p>
+    @Html.ActionLink(
+        "Quay lại danh sách",
+        "List",
+        "Posts",
+        null,
+        new { @class = "btn btn-default" }
+    )
+</p>
